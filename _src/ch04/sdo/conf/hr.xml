@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<employees xmlns="http://www.binildas.com/apache/tuscany/sdo/sample">
+  <employee id="30379">
+    <name>Binildas C. A.</name>
+    <address>
+      <street1>45 Bains Compound Nanthencode</street1>
+      <city>Trivandrum</city>
+      <state>KL</state>
+      <zip-code>695003</zip-code>
+    </address>
+    <organization id="08">
+      <name>Software</name>
+    </organization>
+    <office id="31">
+      <address>
+        <street1>101 Camarino Ruiz</street1>
+        <street2>Apt 2 Camarillo</street2>
+        <city>Callifornia</city>
+        <state>LA</state>
+        <zip-code>93012</zip-code>
+      </address>    
+    </office>
+  </employee>
+  
+  <employee id="30380">
+    <name>Rajesh R V</name>
+    <address>
+      <street1>1400 Salt Lake Road</street1>
+      <street2>Appartment 5E</street2>
+      <city>Boston</city>
+      <state>MA</state>
+      <zip-code>20967</zip-code>
+    </address>
+    <organization id="15">
+      <name>Research</name>
+    </organization>
+    <office id="21">
+      <address>
+        <street1>2700 Cambridge Drive</street1>
+        <city>Boston</city>
+        <state>MA</state>
+        <zip-code>20968</zip-code>
+      </address>    
+    </office>
+  </employee>
+</employees>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jdo SYSTEM "file:/javax/jdo/jdo.dtd">
+<jdo>
+    <package name="com.binildas.jdo.jpox.order">
+        <class name="OrderList" identity-type="application" objectid-class="OrderList$Oid" table="ORDERLIST">
+            <field name="number" primary-key="true">
+                <column name="ORDERLIST_ID"/>
+            </field>
+            <field name="orderDate">
+                <column name="ORDER_DATE"/>
+            </field>
+
+            <field name="lineItems" persistence-modifier="persistent" mapped-by="orderList">
+                <collection element-type="LineItem">
+                </collection>
+            </field>
+        </class>
+
+        <class name="LineItem" table="LINEITEM">
+            <field name="productId">
+                <column name="PRODUCT_ID"/>
+            </field>
+            <field name="numberOfItems">
+                <column name="NUMBER_OF_ITEMS"/>
+            </field>
+
+            <field name="orderList" persistence-modifier="persistent">
+                <column name="LINEITEM_ORDERLIST_ID"/>
+            </field>
+        </class>
+
+    </package>
+</jdo>

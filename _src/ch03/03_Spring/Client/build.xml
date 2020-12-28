@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="hello">
+
+    <property file="../../examples.properties"/>
+
+  <property name="src" value="src" /> 
+  <property name="build" value="build" /> 
+  <property name="config" value="config" /> 
+
+    <path id="classpath">
+      <pathelement path="${build}"/>
+      <pathelement path="${config}"/>
+        <fileset dir="${spring.home}/dist">
+            <include name="spring.jar"/>
+        </fileset>
+        <fileset dir="${commonslogging.home}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${axis.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+  <target name="all" depends="clean, init, compile">
+  </target>
+
+    <target name="clean" description="cleans">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="init" description="cleans">
+        <mkdir dir="${build}"/>
+    </target>
+
+  <target name="compile" description="Compile all Java">
+        <copy todir="${build}">
+            <fileset dir="../Common/build">
+                <include name="**/*.class"/>
+            </fileset>
+        </copy>
+    <javac srcdir="${src}" destdir="${build}" debug="on" source="1.6" target="1.6">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <target name="run">
+  <java classname="com.binildas.apache.axis.AxisSpring.Client" fork="yes" failonerror="true">
+    <classpath>
+       <path refid="classpath"/>
+    </classpath>
+  </java>
+  </target>
+
+</project>

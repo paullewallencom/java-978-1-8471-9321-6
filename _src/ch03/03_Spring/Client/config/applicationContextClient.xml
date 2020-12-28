@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="helloService" class="org.springframework.remoting.jaxrpc.JaxRpcPortProxyFactoryBean">
+		<property name="serviceFactoryClass">
+			<value>org.apache.axis.client.ServiceFactory</value>
+		</property>
+		<property name="serviceInterface" value="com.binildas.apache.axis.AxisSpring.IHello"/>
+		<property name="wsdlDocumentUrl" value="http://localhost:8080/AxisSpring/services/HelloWebService?wsdl"/>
+		<property name="namespaceUri" value="http://AxisSpring.axis.apache.binildas.com"/>
+		<property name="serviceName" value="IHelloWebService"/>
+		<property name="portName" value="HelloWebService"/>
+	</bean>
+
+	<bean id="clientObject" class="com.binildas.apache.axis.AxisSpring.ClientObject">
+		<property name="helloService" ref="helloService"/>
+	</bean>
+	
+</beans>

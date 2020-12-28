@@ -1,0 +1,81 @@
+<project name="customer" default="all">
+
+    <property file="../examples.properties"/>
+
+    <property name="build" value="build"/>
+    <property name="dist" value="dist"/>
+
+    <property name="test.read.class" value="com.binildas.apache.tuscany.sdo.ReadEmployees" />
+    <property name="test.create.class" value="com.binildas.apache.tuscany.sdo.CreateEmployees" />
+    
+	<property name="test.jar"   value="sdo-create-xml.jar" />
+	
+    <path id="classpath">
+        <pathelement path="./build"/>
+        <fileset dir="${tuscany.sdo.home}/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>         
+
+    <target name="all" depends="clean, init, compile">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+		<delete>
+			<fileset dir="." includes="hr_new.xml"/>
+		</delete>
+    </target>
+
+    <target name="clear" depends="clean">
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+	
+    <target name="compile">
+        <javac srcdir="src"
+               destdir="${build}"
+               debug="on"
+               source="1.5"
+               target="1.5"
+               classpathref="classpath">
+        </javac> 
+        <copy todir="${build}">
+            <fileset dir="conf"/>
+        </copy>
+        <jar destfile="${dist}/${test.jar}" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="${test.create.class}" /> 
+            </manifest>
+        </jar>    	
+    </target>	
+	
+    <target name="read">
+        <java classname="${test.read.class}"
+              fork="true">
+	    
+		<classpath>
+			<path refid="classpath"/>
+			<pathelement path="${dist}/${test.jar}"/>
+		</classpath>   
+	    
+        </java>    	
+    </target>	
+
+    <target name="create">
+        <java classname="${test.create.class}"
+              fork="true">
+	    
+		<classpath>
+			<path refid="classpath"/>
+			<pathelement path="${dist}/${test.jar}"/>
+		</classpath>   
+	    
+        </java>    	
+    </target>	
+	
+</project>

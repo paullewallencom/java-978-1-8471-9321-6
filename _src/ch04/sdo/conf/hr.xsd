@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		    xmlns="http://www.binildas.com/apache/tuscany/sdo/sample" targetNamespace="http://www.binildas.com/apache/tuscany/sdo/sample">
+
+  <xsd:annotation>
+    <xsd:documentation>This is a simple HR database in XML.</xsd:documentation>
+  </xsd:annotation>
+  
+  <!-- Employee Storage -->
+  <xsd:element name="employees">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="employee" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Employee -->
+  <xsd:element name="employee">
+    <xsd:annotation>
+      <xsd:documentation>Employee representation</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="name" type="xsd:string" />
+        <xsd:element ref="address" maxOccurs="2" />
+        <xsd:element ref="organization" />
+        <xsd:element ref="office" />
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:integer" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Organization -->
+  <xsd:element name="organization">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="name" type="xsd:string"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:integer" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <!-- Office -->
+  <xsd:element name="office">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="address"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:integer" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <!-- Address -->
+  <xsd:element name="address">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="street1" type="xsd:string"/>
+        <xsd:element name="street2" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="city" type="xsd:string"/>
+        <xsd:element name="state" type="stateAbbreviation"/>
+        <xsd:element ref="zip-code"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="zip-code">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:pattern value="[0-9]{5}(-[0-9]{4})?"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+
+  <xsd:simpleType name="stateAbbreviation">
+	<xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z]{2}"/>
+   	</xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

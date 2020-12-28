@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="hello">
+
+    <property file="../../../examples.properties"/>
+
+  <property environment="env"/>
+  <property name="src" value="src" /> 
+  <property name="gensrc" value="gensrc" /> 
+  <property name="build" value="build" /> 
+
+    <path id="classpath">
+      <pathelement path="${build}"/>
+    </path>
+
+  <target name="all" depends="clean, init, GenSrc, compileStub, compileClient">
+  </target>
+
+    <target name="clean" description="cleans">
+        <delete dir="${build}"/>
+        <delete dir="${gensrc}"/>
+    </target>
+
+    <target name="init" description="cleans">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${gensrc}"/>
+    </target>
+
+    <target name="GenSrc">
+        <exec executable="${env.JAVA_HOME}/bin/wsimport">
+            <arg line="-keep -d build -p com.binildas.ws.javastandalone.simple -s ${gensrc}  http://localhost:8080/Hello?WSDL"/>
+        </exec>
+    </target>
+
+    <target name="compileStub" description="Compile all Java files">
+        <javac debug="true" deprecation="true" destdir="${build}" srcdir="${gensrc}">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <target name="compileClient" description="Compile all Java files">
+        <javac debug="true" deprecation="true" destdir="${build}" srcdir="${src}">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+  <target name="run" description="Runs the example client">
+    <echo>Running example client</echo>
+    <java classname="com.binildas.ws.javastandalone.simple.HelloClient" fork="yes" maxmemory="100M">
+      <classpath refid="classpath"/>
+      <arg value="http://localhost:8080/Hello?WSDL" />
+      <arg value="http://simple.javastandalone.ws.binildas.com/" />
+      <arg value="HelloService" />
+    </java>
+  </target>
+
+</project>

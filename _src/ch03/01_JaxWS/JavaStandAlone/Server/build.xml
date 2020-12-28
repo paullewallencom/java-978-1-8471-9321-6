@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="hello">
+
+    <property file="../../../examples.properties"/>
+
+  <property name="src" value="src" /> 
+  <property name="build" value="build" /> 
+
+    <path id="classpath">
+      <pathelement path="${build}"/>
+    </path>
+
+  <target name="all" depends="clean, init, compile">
+  </target>
+
+    <target name="clean" description="cleans">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="init" description="cleans">
+        <mkdir dir="${build}"/>
+    </target>
+
+  <target name="compile" description="Compile all Java">
+    <javac srcdir="${src}" destdir="${build}" debug="on" source="1.6" target="1.6">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <target name="run" description="Runs the example client">
+    <echo>Running example client</echo>
+    <java classname="com.binildas.ws.javastandalone.simple.HelloServer" fork="yes" maxmemory="100M">
+      <classpath refid="classpath"/>
+    </java>
+  </target>
+
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sca.tuscany.apache.binildas.com"
+           xmlns:sample="http://sca.tuscany.apache.binildas.com"
+           name="BookingAgent">
+
+    <component name="BookingAgentServiceComponent">
+    
+	<implementation.java class="com.binildas.apache.tuscany.sca.BookingAgentServiceComponent"/>
+	
+        <reference name="flightService" target="FlightServiceComponent" />
+        <reference name="hotelService" target="HotelServiceComponent" />
+        <reference name="cabService" target="CabServiceComponent" />
+    </component>
+
+    <component name="FlightServiceComponent">
+        <implementation.java class="com.binildas.apache.tuscany.sca.FlightServiceImpl"/>
+    </component>
+
+    <component name="HotelServiceComponent">
+        <implementation.java class="com.binildas.apache.tuscany.sca.HotelServiceImpl"/>
+    </component>
+
+    <component name="CabServiceComponent">
+        <implementation.java class="com.binildas.apache.tuscany.sca.CabServiceImpl"/>
+    </component>
+
+</composite>

@@ -1,0 +1,59 @@
+<project name="helloworld-ws-reference" default="all">
+
+    <property file="../examples.properties"/>
+
+    <property name="build" value="build"/>
+    <property name="dist" value="dist"/>
+
+    <property name="test.class" value="com.binildas.apache.tuscany.sca.BookingAgentClient" />
+	<property name="test.jar"   value="bookingagent-sc.jar" />
+
+    <path id="classpath">
+        <pathelement path="./build"/>
+        <fileset dir="${tuscany.sca.home}/lib">
+            <include name="tuscany-sca-manifest.jar"/>
+        </fileset>
+    </path>         
+
+    <target name="all" depends="clean, init, compile">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+	
+    <target name="compile">
+        <javac srcdir="src"
+               destdir="${build}"
+               debug="on"
+               source="1.5"
+               target="1.5"
+               classpathref="classpath">
+        </javac> 
+        <copy todir="${build}">
+            <fileset dir="conf"/>
+        </copy>
+        <jar destfile="${dist}/${test.jar}" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
+    </target>	
+	
+    <target name="run">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="${dist}/${test.jar}"/>
+            	<pathelement location="${tuscany.sca.home}/lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </java>    	
+    </target>
+	
+</project>

@@ -1,0 +1,156 @@
+<project name="hotel" default="all">
+
+    <property file="D:/binil/com/java/samples.properties"/>
+
+    <property name="build" value="build"/>
+    <property name="dist" value="dist"/>
+
+    <!-- environment -->
+    <property environment="env"/>
+	<property file="jpox.properties"/>
+    <property name="project.location" location="."/>
+    <property name="project.build.debug" value="on"/>
+    <property name="Name" value="tutorial"/>
+    <property name="name" value="${Name}"/>
+    <property name="version" value="1.2"/>
+
+    <!-- project workspace directories -->
+    <property name="java.dir" value="src/java"/>
+    <property name="lib.dir" value="lib"/>
+
+    <!-- compile properties -->
+    <property name="classes.dir" value="target/classes"/>
+
+    <path id="lib.classpath">
+    	<fileset dir="${jpox.home}">
+    	    <include name="jpox-core-1.2.0.jar"/>
+    	    <include name="jpox-enhancer-1.2.0.jar"/>
+    	    <include name="jpox-java5-1.2.0.jar"/>
+    	    <include name="jpox-rdbms-1.2.0.jar"/>
+        </fileset>
+    	<fileset dir="${apache.jdo.home}">
+    	    <include name="jdo2-api-2.0.jar"/>
+        </fileset>
+    	<fileset dir="${log4j.home}/dist/lib">
+    	    <include name="log4j*.jar"/>
+        </fileset>
+    	<fileset dir="${objectweb.asm.home}/lib">
+    	    <include name="**/*.jar"/>
+        </fileset>
+    	<fileset dir="${oracle.home}/jdbc/lib">
+    	    <include name="classes12.jar"/>
+        </fileset>
+    	<pathelement location="${classes.dir}"/>
+    	<pathelement location="${basedir}"/>
+    </path>
+
+    <!-- the classpath for the compile -->
+    <path id="compile.classpath">
+        <pathelement location="${build}"/>
+        <path refid="lib.classpath"/>
+    </path>
+
+    <target name="all" depends="clean, init, compile, copy, enhance, createschema">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+		<delete>
+			<fileset dir="." includes="jpox.log"/>
+		</delete>
+    </target>
+
+    <target name="clear" depends="clean">
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <echo message="==================================================================="/>
+        <echo message="Compile configuration:"/>
+        <echo message="java.dir       = ${java.dir}"/>
+        <echo message="classes.dir    = ${classes.dir}"/>
+        <echo message="==================================================================="/>
+        <javac srcdir="src" destdir="${build}" debug="${project.build.debug}" classpathref="compile.classpath">
+            <include name="**/*.java"/>
+        </javac>
+    </target>
+
+    <target name="copy">
+        <copy todir="${build}">
+            <fileset dir="src" includes="**/*.jdo"/>
+        </copy>
+        <copy todir="${build}">
+            <fileset dir="." includes="log4j.properties"/>
+        </copy>
+    </target>
+
+    <target name="enhance">
+
+        <!-- define the task enhancer -->
+        <taskdef name="enhancer" classname="org.jpox.enhancer.tools.EnhancerTask">
+            <classpath refid="compile.classpath"/>
+        </taskdef>
+
+        <!-- enhance -->
+        <enhancer classpathref="compile.classpath"
+            dir="${build}"
+            verbose="true">
+            <sysproperty key="log4j.configuration" value="file:log4j.properties"/>
+        </enhancer>
+    </target>
+
+    <!-- SchemaTool "create" -->
+    <target name="createschema">
+        <taskdef name="schematool" classname="org.jpox.SchemaToolTask">
+            <classpath refid="compile.classpath"/>
+        </taskdef>
+
+        <schematool classpathref="compile.classpath"
+            failonerror="true" verbose="true" mode="create" props="${basedir}/jpox.properties">
+            <fileset dir="${build}">
+                <include name="**/*.jdo"/>
+            </fileset>
+            <sysproperty key="log4j.configuration" value="file:log4j.properties"/>
+        </schematool>
+    </target>
+
+    <!-- SchemaTool "delete" -->
+    <target name="deleteschema">
+        <taskdef name="schematool" classname="org.jpox.SchemaToolTask">
+            <classpath refid="compile.classpath"/>
+        </taskdef>
+
+        <schematool classpathref="compile.classpath"
+            failonerror="true" fork="true" verbose="true" mode="delete" props="${basedir}/jpox.properties">
+            <fileset dir="src">
+                <include name="**/*.jdo"/>
+            </fileset>
+            <sysproperty key="log4j.configuration" value="file:log4j.properties"/>
+        </schematool>
+    </target>
+
+    <!-- SchemaTool "dbinfo" -->
+    <target name="schemainfo">
+        <taskdef name="schematool" classname="org.jpox.SchemaToolTask">
+            <classpath refid="compile.classpath"/>
+        </taskdef>
+
+        <schematool classpathref="compile.classpath"
+            failonerror="true" fork="true" verbose="true" mode="dbinfo" props="${basedir}/jpox.properties">
+            <fileset dir="${build}">
+                <include name="**/*.jdo"/>
+            </fileset>
+            <sysproperty key="log4j.configuration" value="file:log4j.properties"/>
+        </schematool>
+    </target>
+
+	<!-- Run the Sample -->
+    <target name="run" description="Run the application">
+        <java classname="com.binildas.jdo.jpox.order.Main" classpathref="compile.classpath" fork="true"/>
+	</target>
+</project>

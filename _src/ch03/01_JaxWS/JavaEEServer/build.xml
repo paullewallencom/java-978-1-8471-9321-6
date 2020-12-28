@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="hello-jaxws" default="all" basedir=".">
+    <!-- include user specific build properties -->
+
+    <property file="../../examples.properties"/>
+    
+    <property name="autodeploydir" value="${javaee.domaindir}/autodeploy"/>
+    <property name="classesdir" value="./build"/>
+
+    <path id="classpath">
+        <pathelement location="${javaee.home}/lib/j2ee.jar"/>
+        <pathelement location="${classesdir}"/>
+    </path>
+    
+    <target name="all" depends="run-client">
+        <!--antcall target="restore"/-->
+    </target>
+
+
+    <target name="init">
+        <condition property="windows">
+            <os family="windows" /> 
+        </condition>
+        <condition property="unix">
+            <os family="unix" /> 
+        </condition>
+    </target>
+
+    <target name="compile-deploy-service" depends="init, clean">
+        <mkdir dir="${classesdir}"/>
+        <echo message="${javaee.home}"/>
+        <javac 
+            srcdir="./src" 
+            includes="com/binildas/ws/javaee/simple/HelloWebService.java"
+            destdir="${autodeploydir}"
+            classpath="${javaee.home}/lib/j2ee.jar" 
+        />
+        <waitfor maxwait="60" maxwaitunit="second">
+           <or>
+                <available file="${autodeploydir}/com/binildas/ws/javaee/simple/HelloWebService.class_deployed"/>
+                <available file="${autodeploydir}/com/binildas/ws/javaee/simple/HelloWebService.class_deployFailed"/>
+           </or>
+        </waitfor>
+        <condition property="deploy_succeeded">
+                <available file="${autodeploydir}/com/binildas/ws/javaee/simple/HelloWebService.class_deployed"/>
+        </condition>
+        <condition property="deploy_failed">
+                <available file="${autodeploydir}/com/binildas/ws/javaee/simple/HelloWebService.class_deployFailed"/>
+        </condition>
+    </target>
+
+    <target name="get-artifacts" depends="compile-deploy-service,get-artifacts-windows,get-artifacts-unix"/>
+
+    <target name="get-artifacts-windows" if="windows">
+        <exec executable="${javaee.home}/bin/wsimport.bat">
+            <arg line="-keep -d ${classesdir} http://${javaee.server.name}:${javaee.server.port}/HelloWebService/HelloWebServiceService?WSDL"/>
+        </exec>
+    </target>
+
+    <target name="get-artifacts-unix" if="unix">
+        <exec executable="${javaee.home}/bin/wsimport">
+            <arg line="-keep -d ${classesdir} http://${javaee.server.name}:${javaee.server.port}/HelloWebService/HelloWebServiceService?WSDL"/>
+        </exec>
+    </target>
+
+    <target name="compile-client" depends="get-artifacts">
+        <javac srcdir="./src" destdir="${classesdir}">
+            <classpath refid="classpath"/>
+            <include name="**/*/Client.java"/>
+        </javac>
+    </target>
+    
+    <target name="clean">
+    <delete dir="${classesdir}"/>
+    </target>
+
+    <target name="run-client" depends="compile-client,run-client-windows,run-client-unix"/>
+
+    <target name="run-client-windows" if="windows">
+        <exec executable="${javaee.home}/bin/appclient.bat" dir="${classesdir}">
+            <arg value="com.binildas.ws.javaee.simple.Client"/>    
+        </exec>    
+    </target>
+
+    <target name="run-client-unix" if="unix"> 
+        <exec executable="${javaee.home}/bin/appclient" dir="${classesdir}" failifexecutionfails="false">
+            <arg value="com.binildas.ws.javaee.simple.Client"/>    
+        </exec>    
+    </target>
+
+    <target name="restore">
+        <delete>
+        <fileset dir="${autodeploydir}/endpoint" includes="Hello*.*"/>
+        </delete>
+    </target>
+
+    <target name="undeploy">
+        <antcall target="restore"/>
+    </target>
+
+</project>

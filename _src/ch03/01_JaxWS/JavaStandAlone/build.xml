@@ -1,0 +1,16 @@
+<project name="voipservice" default="call" basedir=".">
+
+  <target name="call" depends="server">
+  </target>
+
+  <target name="server" description="Setup all components">
+    <ant antfile="build.xml" dir="Server" target="all" inheritAll="true" />
+    <ant antfile="build.xml" dir="Server" target="run" inheritAll="true" />
+  </target>
+
+  <target name="client" description="Setup all components">
+    <ant antfile="build.xml" dir="Client" target="all" inheritAll="true" />
+    <ant antfile="build.xml" dir="Client" target="run" inheritAll="true" />
+  </target>
+
+</project>
